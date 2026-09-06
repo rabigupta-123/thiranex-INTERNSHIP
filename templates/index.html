@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>&#128274; Password Strength Analyzer</h1>
+            <p class="subtitle">Evaluate length, complexity &amp; uniqueness / learn cryptography</p>
+        </header>
+
+        <section class="card">
+            <div class="field">
+                <label for="password">Enter a password</label>
+                <div class="input-row">
+                    <input type="password" id="password" placeholder="Type a password..." autocomplete="off" spellcheck="false">
+                    <button id="toggle" class="secondary" type="button" title="Show/hide">&#128065;</button>
+                </div>
+            </div>
+
+            <div id="result">
+                <div class="meter">
+                    <div class="meter-bar" id="meterBar" style="width:0%"></div>
+                </div>
+                <div class="score-row">
+                    <span id="label" class="badge">Waiting for input...</span>
+                    <span id="scoreText"></span>
+                </div>
+                <div id="insights" class="insights"></div>
+            </div>
+
+            <div class="actions">
+                <button id="checkBtn" class="primary" type="button">Analyze</button>
+                <button id="saveBtn" class="secondary" type="button" title="Record this password in history">Save to history</button>
+            </div>
+            <p id="historyMsg" class="hint"></p>
+
+            <div id="bruteForce" class="brute-force" hidden>
+                <h3>&#128296; Brute-force resistance</h3>
+                <table id="bfTable">
+                    <thead><tr><th>Attack scenario</th><th>Time to crack</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <p id="bfVerdict" class="verdict"></p>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="card">
+                <h2>&#9889; Generate a strong password</h2>
+                <div class="field">
+                    <label for="length">Length</label>
+                    <input type="number" id="length" value="20" min="12" max="64">
+                </div>
+                <button id="generateBtn" class="primary" type="button">Generate</button>
+                <div class="output" id="generated"></div>
+            </div>
+            <div class="card">
+                <h2>&#128272; Hash preview (crypto)</h2>
+                <button id="hashBtn" class="primary" type="button">Show hashes of current input</button>
+                <pre id="hashes" class="output"></pre>
+            </div>
+        </section>
+
+        <section class="card learn">
+            <h2>&#127891; What makes a strong password?</h2>
+            <ul>
+                <li><strong>Length</strong> is the single biggest factor. Each extra character multiplies the search space.</li>
+                <li><strong>Complexity</strong> uses uppercase, lowercase, numbers and symbols - bigger character pool = more entropy.</li>
+                <li><strong>Uniqueness</strong> means avoiding dictionary words, names and common patterns attackers try first.</li>
+                <li><strong>Entropy</strong> (bits) = log2(pool_size) &times; length. Every 10 bits roughly multiplies cracking time ~1000&times;.</li>
+                <li>Use a <strong>passphrase</strong> of random words - memorable yet strong.</li>
+            </ul>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
