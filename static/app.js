@@ -5,6 +5,8 @@ const labelEl = document.getElementById("label");
 const scoreText = document.getElementById("scoreText");
 const insights = document.getElementById("insights");
 const historyMsg = document.getElementById("historyMsg");
+const resultEl = document.getElementById("result");
+const bruteForceEl = document.getElementById("bruteForce");
 
 function badgeClass(name) {
     return name.toLowerCase().replace(/\s+/g, "");
@@ -21,11 +23,13 @@ function meterColor(score) {
 async function analyze(showToast = true) {
     const pw = passwordInput.value;
     if (!pw) {
+        resultEl.hidden = false;
         meterBar.style.width = "0%";
         labelEl.textContent = "Waiting for input...";
         labelEl.className = "badge";
         scoreText.textContent = "";
         insights.innerHTML = "";
+        bruteForceEl.hidden = true;
         return;
     }
     const res = await fetch("/api/analyze", {
@@ -34,6 +38,7 @@ async function analyze(showToast = true) {
         body: JSON.stringify({ password: pw }),
     }).then(r => r.json());
 
+    resultEl.hidden = false;
     meterBar.style.width = res.score + "%";
     meterBar.style.background = meterColor(res.score);
 
@@ -67,7 +72,6 @@ async function analyze(showToast = true) {
         : "Stored passwords in history: " + res.history_count + ".";
 
     // Brute-force resistance table
-    const bfEl = document.getElementById("bruteForce");
     const bfTbody = document.querySelector("#bfTable tbody");
     const bfVerdict = document.getElementById("bfVerdict");
     if (res.brute_force && res.brute_force.scenarios) {
@@ -86,10 +90,16 @@ async function analyze(showToast = true) {
             ? "This password holds up well against brute force (" + res.entropy + " bits entropy)."
             : "Increase length and complexity to improve brute-force resistance.";
         bfVerdict.className = "verdict " + (res.brute_force.recommended ? "strong" : "weak");
-        bfEl.hidden = false;
+        bruteForceEl.hidden = false;
     } else {
-        bfEl.hidden = true;
+        bruteForceEl.hidden = true;
     }
+}
+
+function resetAnalysis() {
+    resultEl.hidden = true;
+    bruteForceEl.hidden = true;
+    historyMsg.textContent = "";
 }
 
 async function savePassword() {
@@ -148,7 +158,7 @@ toggleBtn.addEventListener("click", () => {
     toggleBtn.textContent = isPw ? "\uD83D\uDE11" : "\uD83D\uDC41";
 });
 
-passwordInput.addEventListener("input", () => analyze());
+passwordInput.addEventListener("input", resetAnalysis);
 document.getElementById("checkBtn").addEventListener("click", () => analyze());
 document.getElementById("saveBtn").addEventListener("click", savePassword);
 document.getElementById("generateBtn").addEventListener("click", generate);
