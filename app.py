@@ -30,18 +30,12 @@ def analyze():
     data = request.get_json(silent=True) or {}
     password = data.get("password", "")
 
-    if not password:
+    if not isinstance(password, str) or not password:
         return jsonify({"error": "No password provided."}), 400
+    if len(password) > 256:
+        return jsonify({"error": "Password must be 256 characters or fewer."}), 400
 
-    # Build the list of previously used passwords (from our SQLite history)
-    # plus any passwords the client sends in (e.g. comma separated older ones).
-    password_history = []
-    if database.history_count() > 0:
-        # We can't reconstruct plaintext from our hashes, so we flag reuse by
-        # asking the client input. For the demo, pass a client-supplied list.
-        pass
-
-    result = analyze_password(password, password_history)
+    result = analyze_password(password)
 
     # Uniqueness check against the database (hashed comparison)
     reused = database.is_reused(password)
@@ -65,10 +59,17 @@ def save():
     """Record the password as 'used' so it can't be reused later."""
     data = request.get_json(silent=True) or {}
     password = data.get("password", "")
-    if not password:
+    if not isinstance(password, str) or not password:
         return jsonify({"error": "No password provided."}), 400
-    database.record_password(password)
-    return jsonify({"status": "saved", "history_count": database.history_count()})
+    if len(password) > 256:
+        return jsonify({"error": "Password must be 256 characters or fewer."}), 400
+    already_saved = database.is_reused(password)
+    if not already_saved:
+        database.record_password(password)
+    return jsonify({
+        "status": "already_saved" if already_saved else "saved",
+        "history_count": database.history_count(),
+    })
 
 
 @app.route("/api/stats")
@@ -79,7 +80,10 @@ def stats():
 @app.route("/api/generate", methods=["POST"])
 def generate():
     data = request.get_json(silent=True) or {}
-    length = int(data.get("length", 20))
+    try:
+        length = int(data.get("length", 20))
+    except (TypeError, ValueError):
+        return jsonify({"error": "Length must be a whole number."}), 400
     length = max(12, min(length, 64))
     strong = suggest_strong_password(length)
     passphrase = suggest_passphrase()
@@ -101,4 +105,4 @@ def hashes():
 
 if __name__ == "__main__":
     print("Password Strength Analyzer running at http://127.0.0.1:5000")
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)

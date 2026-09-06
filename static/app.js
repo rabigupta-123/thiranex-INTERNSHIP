@@ -111,10 +111,19 @@ async function generate() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ length: parseInt(length, 10) }),
     }).then(r => r.json());
-    document.getElementById("generated").innerHTML =
-        "<strong>Random:</strong> " + res.strong +
-        " <span class='entropy'>~" + res.entropy_estimate + " bits</span>" +
-        "<br><strong>Passphrase:</strong> " + res.passphrase;
+    const generated = document.getElementById("generated");
+    generated.textContent = "";
+    const randomLabel = document.createElement("strong");
+    randomLabel.textContent = "Random: ";
+    const randomText = document.createTextNode(res.strong + " ");
+    const entropy = document.createElement("span");
+    entropy.className = "entropy";
+    entropy.textContent = "~" + res.entropy_estimate + " bits";
+    const passphraseLabel = document.createElement("strong");
+    passphraseLabel.textContent = "Passphrase: ";
+    generated.append(randomLabel, randomText, entropy,
+        document.createElement("br"), passphraseLabel,
+        document.createTextNode(res.passphrase));
 }
 
 async function showHashes() {
