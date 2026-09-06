@@ -428,13 +428,13 @@ _WORD_LIST = [
 ]
 
 
-def suggest_strong_password(length: int = 20, with_symbols: bool = True) -> str:
+def suggest_strong_password(length: int = 32, with_symbols: bool = True) -> str:
     """Generate a cryptographically strong random password.
 
     Guarantees at least one of each character class and uses secrets (CSPRNG),
     giving a search space of roughly pool^length which is infeasible to brute
-    force. pool = 26 + 26 + 10 + ~30 symbols = ~92, so a 20-char password has
-    ~130 bits of entropy.
+    force. pool = 26 + 26 + 10 + ~30 symbols = ~92, so a 32-char password has
+    over 200 bits of theoretical entropy.
     """
     length = max(12, min(length, 64))
     pool = LOWERCASE + UPPERCASE + DIGITS + (SYMBOLS if with_symbols else "")
@@ -453,13 +453,13 @@ def suggest_strong_password(length: int = 20, with_symbols: bool = True) -> str:
     return "".join(secrets.SystemRandom().sample(password, len(password)))
 
 
-def suggest_passphrase(num_words: int = 5, capitalize: bool = True, separator: str = "-") -> str:
+def suggest_passphrase(num_words: int = 7, capitalize: bool = True, separator: str = "-") -> str:
     """Generate a memorable passphrase using a Diceware-style word list.
 
     With a word list of N words, a k-word passphrase has N^k possible
-    combinations. Our list has ~300 words, so a 5-word passphrase has
-    roughly 5 * log2(300) ~ 41 bits of entropy. Add a random number/token
-    suffix for extra brute-force resistance.
+    combinations. Our list has ~300 words, so a 7-word passphrase has
+    roughly 7 * log2(300) ~ 58 bits of entropy. Add a random number/token
+    suffix for additional brute-force resistance.
     """
     num_words = max(3, min(num_words, 8))
     chosen = [secrets.choice(_WORD_LIST) for _ in range(num_words)]

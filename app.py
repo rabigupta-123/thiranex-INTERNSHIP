@@ -81,7 +81,7 @@ def stats():
 def generate():
     data = request.get_json(silent=True) or {}
     try:
-        length = int(data.get("length", 20))
+        length = int(data.get("length", 32))
     except (TypeError, ValueError):
         return jsonify({"error": "Length must be a whole number."}), 400
     length = max(12, min(length, 64))

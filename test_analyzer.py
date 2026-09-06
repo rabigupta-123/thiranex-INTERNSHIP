@@ -71,13 +71,13 @@ class TestAnalyzer(unittest.TestCase):
         self.assertEqual(effective_character_pool("aA1!"), 62 + len("!@#$%^&*()-_=+[]{};:,.<>?/|~`"))
 
     def test_generators_produce_expected_chars(self):
-        pw = suggest_strong_password(20)
-        self.assertEqual(len(pw), 20)
+        pw = suggest_strong_password(32)
+        self.assertEqual(len(pw), 32)
         self.assertTrue(any(c.isdigit() for c in pw))
         self.assertTrue(any(c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" for c in pw))
         # Should be high entropy (brute force resistant)
         self.assertGreater(estimate_entropy(pw), 60)
-        phrase = suggest_passphrase(3)
+        phrase = suggest_passphrase(7)
         self.assertGreaterEqual(len(phrase.split("-")), 3)
 
 

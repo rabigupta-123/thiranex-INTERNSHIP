@@ -13,12 +13,14 @@ Security note on hashing:
 """
 
 import hashlib
+import hmac
 import os
 import sqlite3
 from typing import List, Optional
 
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "passwords.db")
+PBKDF2_ITERATIONS = 600_000
 
 
 def _connect() -> sqlite3.Connection:
@@ -38,7 +40,12 @@ def _connect() -> sqlite3.Connection:
 
 def _hash_password(password: str, salt: Optional[str] = None) -> tuple:
     salt = salt or secrets_hex()
-    digest = hashlib.sha256((salt + password).encode("utf-8")).hexdigest()
+    digest = hashlib.pbkdf2_hmac(
+        "sha256",
+        password.encode("utf-8"),
+        bytes.fromhex(salt),
+        PBKDF2_ITERATIONS,
+    ).hex()
     return digest, salt
 
 
@@ -69,7 +76,8 @@ def is_reused(password: str) -> bool:
         conn.close()
     for digest, salt in rows:
         candidate, _ = _hash_password(password, salt)
-        if candidate == digest:
+        legacy_candidate = hashlib.sha256((salt + password).encode("utf-8")).hexdigest()
+        if hmac.compare_digest(candidate, digest) or hmac.compare_digest(legacy_candidate, digest):
             return True
     return False
 

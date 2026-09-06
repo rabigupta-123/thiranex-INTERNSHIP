@@ -2,6 +2,10 @@
 
 A Flask web app and command-line tool for evaluating password length, complexity, entropy, reuse, and estimated brute-force resistance.
 
+Generated random passwords default to 32 characters and generated passphrases
+use seven random words. Password history is stored with PBKDF2-HMAC-SHA256
+using 600,000 iterations; plaintext passwords are never stored.
+
 ## Run locally
 
 ```powershell
