@@ -2,8 +2,8 @@
     --bg: #ffffff;
     --card: #1a1f36;
     --card2: #232a4a;
-    --text: #e7e9f0;
-    --muted: #9aa0b8;
+    --text: #1f2937;
+    --muted: #5b6472;
     --accent: #5b8cff;
     --green: #2ecc71;
     --yellow: #f1c40f;
@@ -23,8 +23,8 @@ body {
 
 .container { max-width: 880px; margin: 0 auto; }
 
-header { text-align: center; margin-bottom: 28px; }
-header h1 { font-size: 2rem; letter-spacing: .3px; }
+header { text-align: center; margin-bottom: 28px; color: var(--text); }
+header h1 { color: #111827; font-size: 2rem; letter-spacing: .3px; }
 .subtitle { color: var(--muted); margin-top: 6px; }
 
 .card {
