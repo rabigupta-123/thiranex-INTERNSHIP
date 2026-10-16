@@ -2,7 +2,7 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/framework-Flask-lightgrey.svg)](https://flask.palletsprojects.com/)
-[![Tests](https://img.shields.io/badge/tests-31%20passing-brightgreen.svg)]()
+[![Tests](https://github.com/rabigupta-123/thiranex-INTERNSHIP/actions/workflows/test.yml/badge.svg)](https://github.com/rabigupta-123/thiranex-INTERNSHIP/actions/workflows/test.yml)
 [![Security](https://img.shields.io/badge/security-OWASP%20PBKDF2--HMAC--SHA256-blueviolet.svg)](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)]()
 
