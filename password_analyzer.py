@@ -447,7 +447,11 @@ def suggest_strong_password(length: int = 32, with_symbols: bool = True) -> str:
     # unusually low empirical entropy estimate from accidental repeats.
     remaining = length - len(password)
     available = "".join(char for char in pool if char not in password)
-    password.extend(secrets.SystemRandom().sample(available, remaining))
+    if remaining <= len(available):
+        password.extend(secrets.SystemRandom().sample(available, remaining))
+    else:
+        password.extend(available)
+        password.extend(secrets.choice(pool) for _ in range(remaining - len(available)))
 
     # Shuffle so the guaranteed class chars aren't in predictable positions
     return "".join(secrets.SystemRandom().sample(password, len(password)))

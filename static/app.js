@@ -38,6 +38,11 @@ async function analyze(showToast = true) {
         body: JSON.stringify({ password: pw }),
     }).then(r => r.json());
 
+    if (res.error) {
+        historyMsg.textContent = res.error;
+        return;
+    }
+
     resultEl.hidden = false;
     meterBar.style.width = res.score + "%";
     meterBar.style.background = meterColor(res.score);

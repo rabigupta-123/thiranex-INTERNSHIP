@@ -24,7 +24,8 @@ PBKDF2_ITERATIONS = 600_000
 
 
 def _connect() -> sqlite3.Connection:
-    conn = sqlite3.connect(DB_PATH)
+    target_path = os.getenv("PASSWORDS_DB_PATH", DB_PATH)
+    conn = sqlite3.connect(target_path)
     conn.execute(
         """
         CREATE TABLE IF NOT EXISTS password_history (
@@ -35,6 +36,7 @@ def _connect() -> sqlite3.Connection:
         )
         """
     )
+    conn.commit()
     return conn
 
 

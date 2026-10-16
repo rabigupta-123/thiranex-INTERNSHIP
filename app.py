@@ -98,8 +98,10 @@ def generate():
 def hashes():
     data = request.get_json(silent=True) or {}
     password = data.get("password", "")
-    if not password:
+    if not isinstance(password, str) or not password:
         return jsonify({"error": "No password provided."}), 400
+    if len(password) > 256:
+        return jsonify({"error": "Password must be 256 characters or fewer."}), 400
     return jsonify(hash_password(password, salt="demo-salt"))
 
 
